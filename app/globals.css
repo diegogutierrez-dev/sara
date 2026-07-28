@@ -324,18 +324,15 @@ a { color: inherit; text-decoration: none; }
 }
 /* Nota: un img absoluto con inset y width/height auto NO se estira (usa su
    tamaño intrínseco); hay que dar porcentajes explícitos. */
-.logo__symbol img,
-.logo__symbol svg {
+.logo__symbol img {
   display: block;
   position: absolute;
   left: -0.45%;
   top: -0.48%;
   width: 100.89%;
   height: 100.8%;
-  overflow: visible;
 }
-.logo__symbol--entrecuerdas img,
-.logo__symbol--entrecuerdas svg {
+.logo__symbol--entrecuerdas img {
   left: -9.4%;
   top: -3.15%;
   width: 118.72%;
@@ -544,7 +541,7 @@ a { color: inherit; text-decoration: none; }
   pointer-events: none;
 }
 .site[data-view="ens-detail"] .ens-symbol { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-.ens-symbol [data-symbol] {
+.ens-symbol img {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -552,29 +549,12 @@ a { color: inherit; text-decoration: none; }
   opacity: 0;
   transition: opacity 0.6s ease;
 }
-.ens-symbol [data-symbol] svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-.ens-symbol [data-symbol="nomadas"] { width: min(750px, 52.08vw); aspect-ratio: 750.563 / 751.274; }
-.ens-symbol [data-symbol="entrecuerdas"] { height: min(798px, 55.42vw); aspect-ratio: 885 / 796; }
-.ens-symbol [data-symbol="otros"] { width: min(750px, 52.08vw); aspect-ratio: 1; }
-.site[data-ens="nomadas"] .ens-symbol [data-symbol="nomadas"],
-.site[data-ens="entrecuerdas"] .ens-symbol [data-symbol="entrecuerdas"],
-.site[data-ens="otros"] .ens-symbol [data-symbol="otros"] { opacity: 1; }
-
-/* El compás de nómadas gira imperceptiblemente lento */
-.ens-symbol [data-symbol="nomadas"] svg > g {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: symbol-spin 90s linear infinite;
-}
-@keyframes symbol-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) {
-  .ens-symbol [data-symbol="nomadas"] svg > g { animation: none; }
-}
+.ens-symbol img[data-symbol="nomadas"] { width: min(750px, 52.08vw); }
+.ens-symbol img[data-symbol="entrecuerdas"] { height: min(798px, 55.42vw); }
+.ens-symbol img[data-symbol="otros"] { width: min(750px, 52.08vw); }
+.site[data-ens="nomadas"] .ens-symbol img[data-symbol="nomadas"],
+.site[data-ens="entrecuerdas"] .ens-symbol img[data-symbol="entrecuerdas"],
+.site[data-ens="otros"] .ens-symbol img[data-symbol="otros"] { opacity: 1; }
 
 .ens-flauta-label {
   position: absolute;
@@ -1074,7 +1054,7 @@ a { color: inherit; text-decoration: none; }
     width: 100vw;
     height: 100vw;
   }
-  .ens-symbol [data-symbol] { width: 92vw !important; height: auto !important; }
+  .ens-symbol img[data-symbol] { width: 92vw !important; height: auto !important; }
   .particles { display: none; }
   .ens-flauta-label { position: static; margin-top: 5vh; }
   .ens-title { position: static; font-size: clamp(40px, 12vw, 48px); margin-top: 8px; transform: none; }

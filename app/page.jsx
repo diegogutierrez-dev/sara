@@ -47,95 +47,6 @@ export default function Home() {
       });
     };
 
-    /* ---------- Símbolos de ensamble: SVG inline + dibujo de trazo ---------- */
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const symbolReady = {};
-    q(".ens-symbol [data-symbol]").forEach((host) => {
-      const name = host.dataset.symbol;
-      symbolReady[name] = fetch(`/assets/svg/symbol-${name}-big.svg`)
-        .then((r) => r.text())
-        .then((txt) => {
-          /* pathLength=1 normaliza todos los trazos para animar el dashoffset */
-          host.innerHTML = txt.replace(
-            /<(path|circle|ellipse|line)\b/g,
-            '<$1 pathLength="1"'
-          );
-          gsap.set(host.querySelectorAll("[pathLength]"), {
-            strokeDasharray: 1.001,
-            strokeDashoffset: 0,
-          });
-        })
-        .catch(() => {});
-    });
-    /* Logos de la vista ensambles: mismo tratamiento de dibujo */
-    const logoReady = [];
-    q(".logo__symbol[data-logo]").forEach((host) => {
-      logoReady.push(
-        fetch(`/assets/svg/logo-${host.dataset.logo}.svg`)
-          .then((r) => r.text())
-          .then((txt) => {
-            host.innerHTML = txt.replace(
-              /<(path|circle|ellipse|line)\b/g,
-              '<$1 pathLength="1"'
-            );
-            gsap.set(host.querySelectorAll("[pathLength]"), {
-              strokeDasharray: 1.001,
-              strokeDashoffset: 0,
-            });
-          })
-          .catch(() => {})
-      );
-    });
-    const drawLogos = () => {
-      if (reduceMotion) return;
-      Promise.all(logoReady).then(() => {
-        const paths = q(".logo__symbol[data-logo] [pathLength]");
-        if (!paths.length) return;
-        gsap.fromTo(
-          paths,
-          { strokeDashoffset: 1 },
-          {
-            strokeDashoffset: 0,
-            duration: 1.5,
-            stagger: 0.05,
-            ease: "power2.inOut",
-            overwrite: true,
-          }
-        );
-        /* los rellenos (llaves de la flauta) aparecen mientras se dibuja */
-        gsap.fromTo(
-          q(".logo__symbol[data-logo] ellipse, .logo__symbol[data-logo] circle"),
-          { fillOpacity: 0 },
-          { fillOpacity: 1, duration: 1.1, delay: 0.6, ease: "power2.out", overwrite: true }
-        );
-      });
-    };
-
-    const drawSymbol = (ens) => {
-      if (reduceMotion) return;
-      (symbolReady[ens] || Promise.resolve()).then(() => {
-        const host = root.querySelector(`.ens-symbol [data-symbol="${ens}"]`);
-        const paths = host ? host.querySelectorAll("[pathLength]") : [];
-        if (!paths.length) return;
-        gsap.fromTo(
-          paths,
-          { strokeDashoffset: 1 },
-          {
-            strokeDashoffset: 0,
-            duration: 1.8,
-            stagger: 0.07,
-            ease: "power2.inOut",
-            overwrite: true,
-          }
-        );
-        gsap.fromTo(
-          host.querySelectorAll("ellipse, circle"),
-          { fillOpacity: 0 },
-          { fillOpacity: 1, duration: 1.2, delay: 0.7, ease: "power2.out", overwrite: true }
-        );
-      });
-    };
-
     /* ---------- Transición de estado con GSAP Flip ---------- */
     const enterFx = (view) => {
       /* Detalles de entrada (hijos que Flip no cubre), con stagger */
@@ -164,28 +75,13 @@ export default function Home() {
 
     const applyState = (mutate, animate) => {
       if (intro && intro.isActive()) intro.progress(1);
-      /* Dispara el dibujo del símbolo al entrar/cambiar de ensamble */
-      const runMutate = () => {
-        const pv = root.dataset.view;
-        const pe = root.dataset.ens;
-        mutate();
-        if (
-          root.dataset.view === "ens-detail" &&
-          (pv !== "ens-detail" || pe !== root.dataset.ens)
-        ) {
-          drawSymbol(root.dataset.ens);
-        }
-        if (root.dataset.view === "ensambles" && pv !== "ensambles") {
-          drawLogos();
-        }
-      };
       if (!animate) {
-        runMutate();
+        mutate();
         return;
       }
       /* En móvil no hay morphs: fundido simple + entradas escalonadas */
       if (isMobile()) {
-        runMutate();
+        mutate();
         window.scrollTo(0, 0);
         gsap.fromTo(
           stageEl,
@@ -199,7 +95,7 @@ export default function Home() {
       if (activeFlip) activeFlip.kill();
       const state = Flip.getState(targets, { props: "opacity,fontSize" });
       const prevContent = root.querySelector(".ens-content.is-active");
-      runMutate();
+      mutate();
       const nextContent = root.querySelector(".ens-content.is-active");
       activeFlip = Flip.from(state, {
         duration: 1,
@@ -400,6 +296,7 @@ export default function Home() {
     /* ---------- Partículas del diente de león (home) ---------- */
     const particlesHost = root.querySelector(".particles");
     const particleTls = [];
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!reduceMotion && particlesHost) {
       const COUNT = 16;
       for (let i = 0; i < COUNT; i++) {
@@ -497,19 +394,14 @@ export default function Home() {
       const qs = new URLSearchParams(location.search);
       const hx = parseInt(qs.get("hx") || "60", 10);
       const hy = parseInt(qs.get("hy") || "275", 10);
-      const refresh = () => {
-        const hit = document.elementFromPoint(hx, hy);
-        d.textContent = [
-          `stage=${stageEl.clientWidth} inner=${window.innerWidth} mob=${isMobile()}`,
-          `svgs=${root.querySelectorAll(".ens-symbol svg").length} paths=${root.querySelectorAll(".ens-symbol [pathLength]").length} particles=${root.querySelectorAll(".particle").length}`,
-          `hit(${hx},${hy})=${hit ? hit.className || hit.tagName : "none"}`,
-          cs(".blurb"),
-          cs(".flauta-heading"),
-          cs(".name-heading"),
-        ].join("\n");
-      };
-      refresh();
-      setInterval(refresh, 800);
+      const hit = document.elementFromPoint(hx, hy);
+      d.textContent = [
+        `stage=${stageEl.clientWidth} inner=${window.innerWidth} mob=${isMobile()}`,
+        `hit(${hx},${hy})=${hit ? hit.className || hit.tagName : "none"}`,
+        cs(".blurb"),
+        cs(".flauta-heading"),
+        cs(".name-heading"),
+      ].join("\n");
       document.body.appendChild(d);
     }
 
@@ -616,21 +508,21 @@ export default function Home() {
         {/* Fila de logos de ensambles */}
         <div className="logo-row">
           <a className="logo" href="#/ensambles/nomadas">
-            <span className="logo__symbol" data-logo="nomadas" />
+            <span className="logo__symbol"><img src="/assets/svg/logo-nomadas.svg" alt="" /></span>
             <span className="logo__wordmark">
               <span className="logo__title logo__title--thin">nómadas</span>
               <span className="logo__sub">ensamble</span>
             </span>
           </a>
           <a className="logo" href="#/ensambles/entrecuerdas">
-            <span className="logo__symbol logo__symbol--entrecuerdas" data-logo="entrecuerdas" />
+            <span className="logo__symbol logo__symbol--entrecuerdas"><img src="/assets/svg/logo-entrecuerdas.svg" alt="" /></span>
             <span className="logo__wordmark">
               <span className="logo__title"><span className="w200">entre</span><span className="w300">cuerdas</span></span>
               <span className="logo__sub">ensamble</span>
             </span>
           </a>
           <a className="logo" href="#/ensambles/otros">
-            <span className="logo__symbol" data-logo="otros" />
+            <span className="logo__symbol"><img src="/assets/svg/logo-otros.svg" alt="" /></span>
             <span className="logo__wordmark">
               <span className="logo__title logo__title--thin">otros</span>
               <span className="logo__sub">ensambles</span>
@@ -716,9 +608,9 @@ export default function Home() {
         {/* Detalle de ensamble */}
         <section className="ens-view" aria-label="Detalle del ensamble">
           <div className="ens-symbol" aria-hidden="true">
-            <div data-symbol="nomadas" />
-            <div data-symbol="entrecuerdas" />
-            <div data-symbol="otros" />
+            <img data-symbol="nomadas" src="/assets/svg/symbol-nomadas-big.svg" alt="" />
+            <img data-symbol="entrecuerdas" src="/assets/svg/symbol-entrecuerdas-big.svg" alt="" />
+            <img data-symbol="otros" src="/assets/svg/symbol-otros-big.svg" alt="" />
           </div>
 
           <p className="ens-flauta-label">Flauta</p>
