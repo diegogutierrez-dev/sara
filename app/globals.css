@@ -726,12 +726,16 @@ a { color: inherit; text-decoration: none; }
   transition: opacity 1s ease;
   pointer-events: none;
 }
+/* La foto conserva su proporción: cubre la banda inferior y recorta
+   (nada de estirarse con la ventana) */
 .tray-bg img {
   position: absolute;
-  left: 0.21%;
-  top: 30.22%;
-  width: 99.58%;
-  height: 93.37%;
+  left: 0;
+  top: 30%;
+  width: 100%;
+  height: 93%;
+  object-fit: cover;
+  object-position: 50% 25%;
   filter: grayscale(1);
 }
 .tray-fade {
