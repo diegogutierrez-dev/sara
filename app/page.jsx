@@ -67,6 +67,50 @@ export default function Home() {
         })
         .catch(() => {});
     });
+    /* Logos de la vista ensambles: mismo tratamiento de dibujo */
+    const logoReady = [];
+    q(".logo__symbol[data-logo]").forEach((host) => {
+      logoReady.push(
+        fetch(`/assets/svg/logo-${host.dataset.logo}.svg`)
+          .then((r) => r.text())
+          .then((txt) => {
+            host.innerHTML = txt.replace(
+              /<(path|circle|ellipse|line)\b/g,
+              '<$1 pathLength="1"'
+            );
+            gsap.set(host.querySelectorAll("[pathLength]"), {
+              strokeDasharray: 1.001,
+              strokeDashoffset: 0,
+            });
+          })
+          .catch(() => {})
+      );
+    });
+    const drawLogos = () => {
+      if (reduceMotion) return;
+      Promise.all(logoReady).then(() => {
+        const paths = q(".logo__symbol[data-logo] [pathLength]");
+        if (!paths.length) return;
+        gsap.fromTo(
+          paths,
+          { strokeDashoffset: 1 },
+          {
+            strokeDashoffset: 0,
+            duration: 1.5,
+            stagger: 0.05,
+            ease: "power2.inOut",
+            overwrite: true,
+          }
+        );
+        /* los rellenos (llaves de la flauta) aparecen mientras se dibuja */
+        gsap.fromTo(
+          q(".logo__symbol[data-logo] ellipse, .logo__symbol[data-logo] circle"),
+          { fillOpacity: 0 },
+          { fillOpacity: 1, duration: 1.1, delay: 0.6, ease: "power2.out", overwrite: true }
+        );
+      });
+    };
+
     const drawSymbol = (ens) => {
       if (reduceMotion) return;
       (symbolReady[ens] || Promise.resolve()).then(() => {
@@ -83,6 +127,11 @@ export default function Home() {
             ease: "power2.inOut",
             overwrite: true,
           }
+        );
+        gsap.fromTo(
+          host.querySelectorAll("ellipse, circle"),
+          { fillOpacity: 0 },
+          { fillOpacity: 1, duration: 1.2, delay: 0.7, ease: "power2.out", overwrite: true }
         );
       });
     };
@@ -125,6 +174,9 @@ export default function Home() {
           (pv !== "ens-detail" || pe !== root.dataset.ens)
         ) {
           drawSymbol(root.dataset.ens);
+        }
+        if (root.dataset.view === "ensambles" && pv !== "ensambles") {
+          drawLogos();
         }
       };
       if (!animate) {
@@ -564,21 +616,21 @@ export default function Home() {
         {/* Fila de logos de ensambles */}
         <div className="logo-row">
           <a className="logo" href="#/ensambles/nomadas">
-            <span className="logo__symbol"><img src="/assets/svg/logo-nomadas.svg" alt="" /></span>
+            <span className="logo__symbol" data-logo="nomadas" />
             <span className="logo__wordmark">
               <span className="logo__title logo__title--thin">nómadas</span>
               <span className="logo__sub">ensamble</span>
             </span>
           </a>
           <a className="logo" href="#/ensambles/entrecuerdas">
-            <span className="logo__symbol logo__symbol--entrecuerdas"><img src="/assets/svg/logo-entrecuerdas.svg" alt="" /></span>
+            <span className="logo__symbol logo__symbol--entrecuerdas" data-logo="entrecuerdas" />
             <span className="logo__wordmark">
               <span className="logo__title"><span className="w200">entre</span><span className="w300">cuerdas</span></span>
               <span className="logo__sub">ensamble</span>
             </span>
           </a>
           <a className="logo" href="#/ensambles/otros">
-            <span className="logo__symbol"><img src="/assets/svg/logo-otros.svg" alt="" /></span>
+            <span className="logo__symbol" data-logo="otros" />
             <span className="logo__wordmark">
               <span className="logo__title logo__title--thin">otros</span>
               <span className="logo__sub">ensambles</span>

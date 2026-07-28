@@ -324,15 +324,18 @@ a { color: inherit; text-decoration: none; }
 }
 /* Nota: un img absoluto con inset y width/height auto NO se estira (usa su
    tamaño intrínseco); hay que dar porcentajes explícitos. */
-.logo__symbol img {
+.logo__symbol img,
+.logo__symbol svg {
   display: block;
   position: absolute;
   left: -0.45%;
   top: -0.48%;
   width: 100.89%;
   height: 100.8%;
+  overflow: visible;
 }
-.logo__symbol--entrecuerdas img {
+.logo__symbol--entrecuerdas img,
+.logo__symbol--entrecuerdas svg {
   left: -9.4%;
   top: -3.15%;
   width: 118.72%;
