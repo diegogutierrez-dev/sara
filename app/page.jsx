@@ -47,6 +47,46 @@ export default function Home() {
       });
     };
 
+    /* ---------- Símbolos de ensamble: SVG inline + dibujo de trazo ---------- */
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const symbolReady = {};
+    q(".ens-symbol [data-symbol]").forEach((host) => {
+      const name = host.dataset.symbol;
+      symbolReady[name] = fetch(`/assets/svg/symbol-${name}-big.svg`)
+        .then((r) => r.text())
+        .then((txt) => {
+          /* pathLength=1 normaliza todos los trazos para animar el dashoffset */
+          host.innerHTML = txt.replace(
+            /<(path|circle|ellipse|line)\b/g,
+            '<$1 pathLength="1"'
+          );
+          gsap.set(host.querySelectorAll("[pathLength]"), {
+            strokeDasharray: 1.001,
+            strokeDashoffset: 0,
+          });
+        })
+        .catch(() => {});
+    });
+    const drawSymbol = (ens) => {
+      if (reduceMotion) return;
+      (symbolReady[ens] || Promise.resolve()).then(() => {
+        const host = root.querySelector(`.ens-symbol [data-symbol="${ens}"]`);
+        const paths = host ? host.querySelectorAll("[pathLength]") : [];
+        if (!paths.length) return;
+        gsap.fromTo(
+          paths,
+          { strokeDashoffset: 1 },
+          {
+            strokeDashoffset: 0,
+            duration: 1.8,
+            stagger: 0.07,
+            ease: "power2.inOut",
+            overwrite: true,
+          }
+        );
+      });
+    };
+
     /* ---------- Transición de estado con GSAP Flip ---------- */
     const enterFx = (view) => {
       /* Detalles de entrada (hijos que Flip no cubre), con stagger */
@@ -75,13 +115,25 @@ export default function Home() {
 
     const applyState = (mutate, animate) => {
       if (intro && intro.isActive()) intro.progress(1);
-      if (!animate) {
+      /* Dispara el dibujo del símbolo al entrar/cambiar de ensamble */
+      const runMutate = () => {
+        const pv = root.dataset.view;
+        const pe = root.dataset.ens;
         mutate();
+        if (
+          root.dataset.view === "ens-detail" &&
+          (pv !== "ens-detail" || pe !== root.dataset.ens)
+        ) {
+          drawSymbol(root.dataset.ens);
+        }
+      };
+      if (!animate) {
+        runMutate();
         return;
       }
       /* En móvil no hay morphs: fundido simple + entradas escalonadas */
       if (isMobile()) {
-        mutate();
+        runMutate();
         window.scrollTo(0, 0);
         gsap.fromTo(
           stageEl,
@@ -95,7 +147,7 @@ export default function Home() {
       if (activeFlip) activeFlip.kill();
       const state = Flip.getState(targets, { props: "opacity,fontSize" });
       const prevContent = root.querySelector(".ens-content.is-active");
-      mutate();
+      runMutate();
       const nextContent = root.querySelector(".ens-content.is-active");
       activeFlip = Flip.from(state, {
         duration: 1,
@@ -293,6 +345,52 @@ export default function Home() {
         "#/ensambles/" + root.dataset.ens + (tab === "videos" ? "/videos" : "");
     };
 
+    /* ---------- Partículas del diente de león (home) ---------- */
+    const particlesHost = root.querySelector(".particles");
+    const particleTls = [];
+    if (!reduceMotion && particlesHost) {
+      const COUNT = 16;
+      for (let i = 0; i < COUNT; i++) {
+        const seed = document.createElement("span");
+        seed.className = "particle";
+        const dot = document.createElement("span");
+        dot.className = "particle__dot";
+        const size = gsap.utils.random(2, 5);
+        dot.style.width = dot.style.height = size + "px";
+        seed.appendChild(dot);
+        particlesHost.appendChild(seed);
+
+        /* vaivén senoidal en el hijo; deriva del viento en el padre */
+        gsap.to(dot, {
+          x: gsap.utils.random(-26, 26),
+          duration: gsap.utils.random(1.6, 3.2),
+          yoyo: true,
+          repeat: -1,
+          ease: "sine.inOut",
+        });
+
+        const float = () => {
+          const w = stageEl.clientWidth || 1440;
+          const h = stageEl.clientHeight || 900;
+          const x0 = w * gsap.utils.random(0.45, 0.56);
+          const y0 = h * gsap.utils.random(0.36, 0.56);
+          const dur = gsap.utils.random(7, 14);
+          const tl = gsap.timeline({ onComplete: float, delay: gsap.utils.random(0, 3) });
+          tl.set(seed, { x: x0, y: y0, opacity: 0 })
+            .to(seed, { opacity: gsap.utils.random(0.3, 0.85), duration: 1.4, ease: "power1.out" }, 0)
+            .to(seed, {
+              x: x0 + gsap.utils.random(140, w * 0.42),
+              y: y0 - gsap.utils.random(90, h * 0.5),
+              duration: dur,
+              ease: "none",
+            }, 0)
+            .to(seed, { opacity: 0, duration: 1.6, ease: "power1.in" }, dur - 1.6);
+          particleTls[i] = tl;
+        };
+        float();
+      }
+    }
+
     /* ---------- Estado inicial e intro ---------- */
     const TRAY_CATS = ["orquestas", "solista", "camara", "academia", "otros"];
     route(false);
@@ -347,14 +445,19 @@ export default function Home() {
       const qs = new URLSearchParams(location.search);
       const hx = parseInt(qs.get("hx") || "60", 10);
       const hy = parseInt(qs.get("hy") || "275", 10);
-      const hit = document.elementFromPoint(hx, hy);
-      d.textContent = [
-        `stage=${stageEl.clientWidth} inner=${window.innerWidth} mob=${isMobile()}`,
-        `hit(${hx},${hy})=${hit ? hit.className || hit.tagName : "none"}`,
-        cs(".blurb"),
-        cs(".flauta-heading"),
-        cs(".name-heading"),
-      ].join("\n");
+      const refresh = () => {
+        const hit = document.elementFromPoint(hx, hy);
+        d.textContent = [
+          `stage=${stageEl.clientWidth} inner=${window.innerWidth} mob=${isMobile()}`,
+          `svgs=${root.querySelectorAll(".ens-symbol svg").length} paths=${root.querySelectorAll(".ens-symbol [pathLength]").length} particles=${root.querySelectorAll(".particle").length}`,
+          `hit(${hx},${hy})=${hit ? hit.className || hit.tagName : "none"}`,
+          cs(".blurb"),
+          cs(".flauta-heading"),
+          cs(".name-heading"),
+        ].join("\n");
+      };
+      refresh();
+      setInterval(refresh, 800);
       document.body.appendChild(d);
     }
 
@@ -371,6 +474,11 @@ export default function Home() {
       if (activeFlip) activeFlip.kill();
       if (intro) intro.kill();
       if (trayTl) trayTl.kill();
+      particleTls.forEach((tl) => tl && tl.kill());
+      if (particlesHost) {
+        gsap.killTweensOf(particlesHost.querySelectorAll(".particle, .particle__dot"));
+        particlesHost.innerHTML = "";
+      }
       gsap.killTweensOf(track);
     };
   }, []);
@@ -433,6 +541,8 @@ export default function Home() {
             <img src="/assets/img/portrait-color.jpg" alt="" />
           </div>
         </div>
+
+        <div className="particles" aria-hidden="true" />
 
         <h1 className="name-heading">Elizabeth<br />Osorio.</h1>
         <p className="flauta-heading">flauta traversa</p>
@@ -554,9 +664,9 @@ export default function Home() {
         {/* Detalle de ensamble */}
         <section className="ens-view" aria-label="Detalle del ensamble">
           <div className="ens-symbol" aria-hidden="true">
-            <img data-symbol="nomadas" src="/assets/svg/symbol-nomadas-big.svg" alt="" />
-            <img data-symbol="entrecuerdas" src="/assets/svg/symbol-entrecuerdas-big.svg" alt="" />
-            <img data-symbol="otros" src="/assets/svg/symbol-otros-big.svg" alt="" />
+            <div data-symbol="nomadas" />
+            <div data-symbol="entrecuerdas" />
+            <div data-symbol="otros" />
           </div>
 
           <p className="ens-flauta-label">Flauta</p>
