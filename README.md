@@ -22,7 +22,7 @@ npm run dev        # http://localhost:3000 (usa -p 3001 si el puerto está ocupa
   `?goto=%23/ruta` (navega tras 1.2s, para probar transiciones).
 - La tipografía serif del diseño es **Kugile**; si no está instalada cae a
   DM Serif Display (autoalojada). Para fidelidad exacta añade el webfont de Kugile
-  en `public/assets/fonts/` y su `@font-face` en `app/globals.css`.
+  en `public/assets/fonts/` y su `@font-face` en `app/styles/base.css`.
 - Tarjetas de video y contenidos de las pestañas "videos" son placeholders (así
   están en el diseño).
 

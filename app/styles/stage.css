@@ -1,0 +1,51 @@
+/* ==========================================================================
+   Fondos (capas fijas con crossfade) y textura
+   ========================================================================== */
+.bg {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.bg--black    { background: #000; opacity: 1; }
+.bg--gradient { background: linear-gradient(180deg, #07090b 0%, #081726 100%); }
+.bg--navy     { background: #091826; }
+
+.site[data-view="bio"] .bg--gradient,
+.site[data-view="videos"] .bg--gradient { opacity: 1; }
+.site[data-view="contacto"] .bg--navy   { opacity: 1; }
+
+.texture {
+  position: fixed;
+  inset: 0;
+  background: url("/assets/img/texture.png") top left / 110px 110px repeat;
+  mix-blend-mode: soft-light;
+  opacity: 0.4;
+  transition: opacity 1s ease;
+  pointer-events: none;
+}
+.site[data-view="bio-full"] .texture,
+.site[data-view="videos"] .texture,
+.site[data-view="contacto"] .texture { opacity: 1; }
+.site[data-view="ens-detail"] .texture,
+.site[data-view="trayectoria"] .texture { opacity: 0; }
+
+/* ==========================================================================
+   Escenario fluido: entre 900 y 1440 fluye; >1440 se centra (max-width)
+   ========================================================================== */
+.stage {
+  position: relative;
+  width: min(100vw, 1440px);
+  min-width: 900px;
+  height: clamp(740px, 100vh, 1080px);
+  margin: auto;
+  overflow: hidden;
+}
+
+.hero-img, .name-heading, .flauta-heading, .blurb,
+.more-arrow, .back-arrow, .logo-row, .videos-strip,
+.contact-photo, .contact-title, .contact-block,
+.topnav, .ensnav {
+  position: absolute;
+}
+

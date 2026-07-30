@@ -1,0 +1,81 @@
+/* ==========================================================================
+   Titulares compartidos
+   ========================================================================== */
+.name-heading {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--fs-display);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  left: 2.85%;
+  top: calc(50% - 0.4em);
+  z-index: 10;
+  pointer-events: none;
+}
+.site[data-view="bio"] .name-heading { left: 2.78%; top: calc(50% - 0.2em); font-size: var(--fs-display-s); }
+.site[data-view="ensambles"] .name-heading,
+.site[data-view="videos"] .name-heading,
+.site[data-view="trayectoria"] .name-heading,
+.site[data-view="contacto"] .name-heading,
+.site[data-view="ens-detail"] .name-heading { left: 2.78%; top: calc(50% + 32px); font-size: var(--fs-display-s); opacity: 0; }
+.site[data-view="bio-full"] .name-heading { left: -46%; top: calc(50% - 0.2em); font-size: var(--fs-display-s); opacity: 0; }
+
+.flauta-heading {
+  font-weight: 100;
+  font-size: var(--fs-title);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  text-align: right;
+  right: 4.93%;
+  top: calc(50% + 54px);
+  z-index: 10;
+  pointer-events: none;
+}
+.site:not([data-view="home"]) .flauta-heading { top: calc(50% - 176px); opacity: 0; }
+
+/* ==========================================================================
+   Reseña corta y flechas
+   ========================================================================== */
+.blurb {
+  left: calc(66.67% - 2px);
+  top: calc(50% + 285px);
+  width: min(321px, 22.3vw);
+  font-weight: 300;
+  font-size: var(--fs-md);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+.site[data-view="bio"] .blurb { top: calc(50% - 55px); opacity: 1; }
+.site[data-view="ensambles"] .blurb { top: calc(50% + 20px); }
+.site[data-view="bio-full"] .blurb { left: -46%; top: calc(50% - 55px); }
+
+.more-arrow {
+  left: 100%;
+  top: calc(50% + 163px);
+  width: 204px;
+  height: 13px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+.more-arrow img, .back-arrow img { display: block; width: 100%; height: 100%; }
+.site[data-view="bio"] .more-arrow { left: min(calc(83.33% - 12px), calc(100% - 216px)); opacity: 1; pointer-events: auto; }
+
+.back-arrow {
+  left: 48px;
+  top: calc(50% + 163px);
+  width: 204px;
+  height: 13px;
+  transform: scaleX(-1);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 30;
+}
+.site[data-view="bio-full"] .back-arrow,
+.site[data-view="ens-detail"] .back-arrow { opacity: 1; pointer-events: auto; }
+

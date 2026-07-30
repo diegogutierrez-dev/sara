@@ -1,0 +1,47 @@
+/* ==========================================================================
+   Base: fuentes, tokens y reset
+   Desktop fluido (900–1440px, page "Desktop" de Figma) + Mobile (<900px,
+   page "Mobile" de Figma). Animaciones de estado: GSAP Flip (hooks/).
+   ========================================================================== */
+
+@font-face {
+  font-family: "DisplayFallback";
+  src: local("Kugile"), local("Kugile Regular"),
+       url("/assets/fonts/dm-serif-display-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --serif: "Kugile", "DisplayFallback", Georgia, serif;
+  --sans: "Helvetica Neue", Helvetica, "Segoe UI", Arial, sans-serif;
+  --blue: #8baed0;
+  /* tipografía fluida (base 1440) con mínimos legibles */
+  --fs-display: clamp(66px, 7.222vw, 104px);   /* 104 */
+  --fs-display-s: clamp(58px, 6.274vw, 90.35px); /* 90.35 */
+  --fs-title: clamp(52px, 5.556vw, 80px);      /* 80 */
+  --fs-md: clamp(17px, 1.667vw, 24px);         /* 24 */
+  --fs-logo: clamp(28px, 2.778vw, 40px);       /* 40 */
+  --fs-logo-sub: clamp(12px, 1.111vw, 16px);   /* 16 */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { height: 100%; }
+
+body {
+  font-family: var(--sans);
+  color: #fff;
+  background: #000;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.site {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+}
+

@@ -1,0 +1,28 @@
+/* ==========================================================================
+   Carrusel de videos
+   ========================================================================== */
+.videos-strip {
+  left: 0;
+  top: 110%;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+.site[data-view="videos"] .videos-strip { top: 50%; transform: translateY(-50%); opacity: 1; pointer-events: auto; }
+.site[data-view="trayectoria"] .videos-strip { top: -55%; }
+
+.videos-strip__track {
+  display: flex;
+  gap: 21px;
+  will-change: transform;
+  cursor: grab;
+}
+.videos-strip__track.is-dragging { cursor: grabbing; }
+.video-card {
+  width: min(660px, 45.83vw);
+  aspect-ratio: 660 / 492;
+  flex-shrink: 0;
+  background: #303030;
+}
+

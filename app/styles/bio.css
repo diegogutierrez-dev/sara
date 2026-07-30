@@ -1,0 +1,68 @@
+/* ==========================================================================
+   Biografía completa
+   ========================================================================== */
+.bio-full {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  transition: visibility 0s linear 1s;
+}
+.site[data-view="bio-full"] .bio-full { visibility: visible; transition-delay: 0s; }
+
+.bio-full__photo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 53.96%;
+  height: 100%;
+  overflow: hidden;
+}
+.bio-full__photo img {
+  position: absolute;
+  left: 0;
+  top: -4.85%;
+  width: 100%;
+  height: 129.48%;
+  object-fit: cover;
+}
+.bio-full__fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(-68.92deg, #000 17.46%, rgba(0, 0, 0, 0) 49.95%);
+}
+.bio-full__title {
+  position: absolute;
+  left: 48px;
+  top: 10.2%;
+  font-weight: 100;
+  font-size: var(--fs-title);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.bio-full__cols {
+  position: absolute;
+  left: 42.85%;
+  top: 50%;
+  display: flex;
+  gap: clamp(56px, 9.24vw, 133px);
+  align-items: flex-start;
+  font-weight: 300;
+  font-size: 14px;
+}
+.bio-full__col { width: min(320px, 22.22vw); }
+.bio-full__col--first { display: flex; flex-direction: column; gap: 43px; }
+.bio-full__col p + p { margin-top: 17px; }
+.bio-full__col--first p + p { margin-top: 0; }
+
+.bio-full__photo,
+.bio-full__title,
+.bio-full__cols {
+  opacity: 0;
+}
+.bio-full__photo { transform: translateX(-120px); }
+.bio-full__title { transform: translateX(-60px); }
+.bio-full__cols  { transform: translateY(-50%) translateX(160px); }
+.site[data-view="bio-full"] .bio-full__photo { opacity: 1; transform: translateX(0); }
+.site[data-view="bio-full"] .bio-full__title { opacity: 1; transform: translateX(0); }
+.site[data-view="bio-full"] .bio-full__cols  { opacity: 1; transform: translateY(-50%) translateX(0); }
+

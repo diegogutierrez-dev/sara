@@ -1,0 +1,60 @@
+/* ==========================================================================
+   Imagen héroe (diente de león ↔ retrato)
+   ========================================================================== */
+.hero-img {
+  left: calc(25% + 29px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(662px, 45.97vw);
+  aspect-ratio: 662 / 492;
+  overflow: hidden;
+}
+.hero-img__slide {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.hero-img__slide--dandelion img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.hero-img__slide--portrait { background: #000; }
+.hero-img__slide--portrait img {
+  position: absolute;
+  left: 17.87%;
+  top: -32.52%;
+  width: 82.13%;
+  height: 165.23%;
+}
+.hero-img__slide--portrait { transform: translateY(100%); }
+.site[data-view="bio"] .hero-img__slide--dandelion { transform: translateY(-100%); }
+.site[data-view="bio"] .hero-img__slide--portrait  { transform: translateY(0); }
+
+.site[data-view="ensambles"] .hero-img,
+.site[data-view="videos"] .hero-img,
+.site[data-view="trayectoria"] .hero-img,
+.site[data-view="contacto"] .hero-img,
+.site[data-view="ens-detail"] .hero-img { top: calc(50% + 20px); opacity: 0; }
+.site[data-view="bio-full"] .hero-img { left: -46%; opacity: 0; }
+
+/* ==========================================================================
+   Partículas del diente de león (home)
+   ========================================================================== */
+.particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 12;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.site[data-view="home"] .particles { opacity: 1; }
+.particle { position: absolute; left: 0; top: 0; will-change: transform, opacity; }
+.particle__dot {
+  display: block;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 70%);
+  filter: blur(0.4px);
+}
+

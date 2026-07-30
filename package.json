@@ -7,6 +7,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "gsap": "^3.12.5",
     "next": "^15.3.0",
     "react": "^19.0.0",

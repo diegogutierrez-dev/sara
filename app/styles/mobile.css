@@ -1,0 +1,355 @@
+/* ==========================================================================
+   MOBILE (<900px) — page "Mobile" de Figma (393×852)
+   ========================================================================== */
+@media (max-width: 899px) {
+  body { overflow-y: auto; }
+  .site { display: block; min-height: 100svh; }
+  .stage {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 100svh;
+    margin: 0;
+    overflow: visible;
+    padding: 96px 16px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  /* orden de lectura por vista (el DOM está pensado para desktop) */
+  .site[data-view="home"] .name-heading,
+  .site[data-view="bio"] .name-heading { order: 1; }
+  .site[data-view="home"] .hero-img,
+  .site[data-view="bio"] .hero-img { order: 2; }
+  .site[data-view="home"] .flauta-heading,
+  .site[data-view="bio"] .blurb { order: 3; }
+  .site[data-view="bio"] .more-arrow { order: 4; }
+  .site[data-view="contacto"] .contact-title { order: 1; }
+  .site[data-view="contacto"] .contact-photo { order: 2; }
+  .site[data-view="contacto"] .contact-block { order: 3; }
+  .site[data-view="ens-detail"] .back-arrow,
+  .site[data-view="bio-full"] .back-arrow { order: 10; }
+
+  /* por defecto nada visible; cada vista enciende lo suyo en flujo normal */
+  .hero-img, .name-heading, .flauta-heading, .blurb, .more-arrow,
+  .back-arrow, .logo-row, .videos-strip, .contact-photo, .contact-title,
+  .contact-block, .ensnav { display: none; }
+
+  /* ----- Barra superior fija ----- */
+  .topnav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 40px 16px 12px;
+    background: transparent;
+    z-index: 60;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  .topnav__menu { display: none; }
+  .topnav__role { display: none; }
+  .topnav__brand::after {
+    content: "FLAUTA TRAVERSA";
+    font-weight: 300;
+  }
+  .site[data-view="bio"] .topnav__brand::after,
+  .site[data-view="bio-full"] .topnav__brand::after { content: "BIOGRAFÍA"; }
+  .site[data-view="ensambles"] .topnav__brand::after { content: "ENSAMBLES DE FLAUTA"; }
+  .site[data-view="ens-detail"] .topnav__brand::after { content: "ENSAMBLES"; }
+  .site[data-view="videos"] .topnav__brand::after { content: "VIDEOS"; }
+  .site[data-view="trayectoria"] .topnav__brand::after { content: "TRAYECTORIA"; }
+  .site[data-view="contacto"] .topnav__brand::after { content: "CONTACTO"; }
+
+  /* ----- Botón + / overlay de menú ----- */
+  .mmenu-btn {
+    display: block;
+    position: fixed;
+    right: 16px;
+    top: 32px;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    z-index: 80;
+  }
+  .mmenu-btn::before, .mmenu-btn::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: #fff;
+    transition: transform 0.4s ease;
+  }
+  .mmenu-btn::before { width: 20px; height: 1px; transform: translate(-50%, -50%); }
+  .mmenu-btn::after  { width: 1px; height: 20px; transform: translate(-50%, -50%); }
+  .site.menu-open .mmenu-btn::before { transform: translate(-50%, -50%) rotate(45deg); }
+  .site.menu-open .mmenu-btn::after  { transform: translate(-50%, -50%) rotate(45deg); }
+
+  .mmenu {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background: linear-gradient(180deg, #050608 0%, #0a1a2b 100%);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6vh;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+  }
+  .site.menu-open .mmenu { opacity: 1; visibility: visible; transition-delay: 0s; }
+  .mmenu__label {
+    position: absolute;
+    left: 16px;
+    top: 44px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .mmenu a {
+    font-weight: 100;
+    font-size: clamp(40px, 12vw, 52px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-transform: lowercase;
+  }
+
+  /* ----- HOME ----- */
+  .site[data-view="home"] .name-heading {
+    display: block;
+    position: static;
+    font-size: clamp(56px, 16.3vw, 64px);
+    white-space: normal;
+    margin: 10vh 0 24px;
+    pointer-events: auto;
+  }
+  .site[data-view="home"] .hero-img,
+  .site[data-view="bio"] .hero-img {
+    display: block;
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    aspect-ratio: 360 / 268;
+    opacity: 1;
+  }
+  .site[data-view="home"] .flauta-heading {
+    display: block;
+    position: static;
+    font-size: clamp(38px, 11.2vw, 44px);
+    margin-top: 32px;
+    text-align: right;
+    opacity: 1;
+  }
+
+  /* ----- BIOGRAFÍA ----- */
+  .site[data-view="bio"] .name-heading {
+    display: block;
+    position: static;
+    font-size: clamp(56px, 16.3vw, 64px);
+    white-space: normal;
+    margin: 10vh 0 24px;
+  }
+  .site[data-view="bio"] .hero-img .hero-img__slide--dandelion { display: none; }
+  .site[data-view="bio"] .hero-img .hero-img__slide--portrait { transform: none; }
+  .site[data-view="bio"] .blurb {
+    display: block;
+    position: static;
+    width: 100%;
+    margin-top: 28px;
+    font-size: 16px;
+    line-height: 1.4;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .site[data-view="bio"] .more-arrow {
+    display: block;
+    position: static;
+    margin: 40px 0 0 auto;
+    width: 172px;
+    height: 13px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ----- BIOGRAFÍA COMPLETA ----- */
+  .bio-full { position: static; height: auto; }
+  .site[data-view="bio-full"] .bio-full { display: block; }
+  .site:not([data-view="bio-full"]) .bio-full { display: none; }
+  .bio-full__title { position: static; font-size: clamp(40px, 12vw, 48px); margin: 6vh 0 24px; transform: none; }
+  .bio-full__photo {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: 56vh;
+    transform: none;
+  }
+  .bio-full__cols {
+    position: static;
+    transform: none !important;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 32px;
+  }
+  .bio-full__col { width: 100%; }
+  .site[data-view="bio-full"] .back-arrow {
+    display: block;
+    position: static;
+    margin-top: 40px;
+    width: 172px;
+    height: 13px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ----- ENSAMBLES (en mobile el diseño usa el degradado azul) ----- */
+  .site[data-view="ensambles"] .bg--gradient { opacity: 1; }
+  .site[data-view="ensambles"] .logo-row {
+    display: flex;
+    position: static;
+    transform: none;
+    flex-direction: column;
+    gap: 56px;
+    margin-top: 4vh;
+  }
+  .logo { width: min(206px, 56vw); }
+
+  /* ----- DETALLE DE ENSAMBLE ----- */
+  .ens-view { position: static; }
+  .site[data-view="ens-detail"] .ens-view { display: block; }
+  .site:not([data-view="ens-detail"]) .ens-view { display: none; }
+  .site[data-view="ens-detail"] .ensnav {
+    display: flex;
+    position: static;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    opacity: 1;
+    margin-top: 2vh;
+  }
+  .ens-symbol {
+    position: fixed;
+    left: 50%;
+    top: 55%;
+    width: 100vw;
+    height: 100vw;
+  }
+  .ens-symbol img[data-symbol] { width: 92vw !important; height: auto !important; }
+  .particles { display: none; }
+  .ens-flauta-label { position: static; margin-top: 5vh; }
+  .ens-title { position: static; font-size: clamp(40px, 12vw, 48px); margin-top: 8px; transform: none; }
+  .site[data-ens="entrecuerdas"] .ens-title { margin-top: 0; }
+  .ens-tabs {
+    position: static;
+    flex-direction: row;
+    gap: 40px;
+    margin-top: 28px;
+    transform: none;
+  }
+  .ens-content { position: static; display: none; }
+  .ens-content.is-active { display: block; transform: none !important; }
+  .ens-cols {
+    position: static;
+    transform: none !important;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 36px;
+  }
+  .ens-col { width: 100%; }
+  .ens-col--text { font-size: 16px; gap: 32px; }
+  .ens-col--text p { line-height: 1.4; }
+  .ens-col--otros { position: static; margin-top: 36px; }
+  .ens-videos-grid {
+    position: static;
+    transform: none !important;
+    grid-template-columns: 1fr;
+    margin-top: 36px;
+  }
+  .site[data-view="ens-detail"] .back-arrow {
+    display: block;
+    position: static;
+    margin-top: 48px;
+    width: 172px;
+    height: 13px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ----- VIDEOS: dos filas con scroll horizontal nativo ----- */
+  .site[data-view="videos"] .videos-strip {
+    display: block;
+    position: static;
+    transform: none !important;
+    width: calc(100% + 32px);
+    margin: 6vh -16px 0;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .site[data-view="videos"] .videos-strip__track {
+    transform: none !important;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, auto);
+    gap: 16px;
+    overflow-x: auto;
+    padding: 0 16px;
+    scroll-snap-type: x proximity;
+    cursor: default;
+  }
+  .site[data-view="videos"] .video-card {
+    width: 84vw;
+    max-width: 328px;
+    aspect-ratio: 328 / 284;
+    scroll-snap-align: center;
+  }
+
+  /* ----- TRAYECTORIA ----- */
+  .trayectoria { position: static; overflow: visible; }
+  .site[data-view="trayectoria"] .trayectoria { display: block; }
+  .site:not([data-view="trayectoria"]) .trayectoria { display: none; }
+  .tray-bg img { top: 20%; height: auto; width: 260%; left: -80%; }
+  .tray-menu { position: static; margin-top: 4vh; gap: 8px; }
+  .tray-menu a { font-size: clamp(30px, 9.2vw, 36px); line-height: 1.05; }
+  .tray-viewport { position: static; width: 100%; height: auto; margin-top: 40px; }
+  .tray-strip { position: static; display: block; transform: none !important; }
+  .tray-group { display: none; width: 100%; }
+  .tray-group.is-current { display: block; opacity: 1 !important; visibility: visible !important; }
+  .tray-group--wide { display: none; flex-direction: column; gap: 24px; }
+  .tray-group--wide.is-current { display: flex; }
+  .tray-col { width: 100%; }
+  .tray-entry p { font-size: 13px; line-height: 1.3; }
+
+  /* ----- CONTACTO ----- */
+  .site[data-view="contacto"] .contact-title {
+    display: block;
+    position: static;
+    font-size: clamp(40px, 12vw, 48px);
+    margin: 8vh 0 24px;
+    opacity: 1;
+  }
+  .site[data-view="contacto"] .contact-photo {
+    display: block;
+    position: static;
+    transform: none;
+    width: 100%;
+    aspect-ratio: 360 / 268;
+    opacity: 1;
+  }
+  .site[data-view="contacto"] .contact-block {
+    display: flex;
+    position: static;
+    width: 100%;
+    align-items: flex-end;
+    gap: 40px;
+    margin-top: 28px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .contact-block__emails { font-size: 16px; text-align: right; }
+}
